@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { toast } from 'react-toastify';  // Import toast
 
 const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
-  const [title, setTitle] = useState(post.title);  // Initialize with current title
-  const [content, setContent] = useState(post.content);  // Initialize with current content
-
-  // Get the token (assume it's stored in localStorage after login)
+  const [title, setTitle] = useState(post.title);
+  const [content, setContent] = useState(post.content);
   const token = localStorage.getItem('token');
 
-  // Function to update the post
   const handleUpdate = async () => {
     try {
       const updatedPost = { title, content };
       await axios.patch(`http://localhost:3000/posts/${post.id}`, updatedPost, {
-        headers: {
-          Authorization: `Bearer ${token}`  // Add the Authorization header with the JWT token
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      onUpdate(post.id, updatedPost);  // Pass the updated post to parent
-      onClose();  // Close the modal
+      onUpdate(post.id, updatedPost);
+      onClose();
+      toast.success('Post updated successfully!');  // Success toast
     } catch (error) {
-      console.error('Error updating post:', error);
+      toast.error('Failed to update post. Please try again.');  // Error toast
     }
   };
 
@@ -39,7 +36,7 @@ const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
         <input
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}  // Update title state
+          onChange={(e) => setTitle(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
         />
       </div>
@@ -47,7 +44,7 @@ const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
         <label className="block text-sm font-medium mb-2">Content</label>
         <textarea
           value={content}
-          onChange={(e) => setContent(e.target.value)}  // Update content state
+          onChange={(e) => setContent(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           rows="5"
         />
