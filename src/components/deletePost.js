@@ -1,23 +1,21 @@
 import React from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { toast } from 'react-toastify';  // Import toast
 
 const DeletePost = ({ post, isOpen, onClose, onDelete }) => {
-  // Get the token (assume it's stored in localStorage after login)
   const token = localStorage.getItem('token');
 
-  // Function to delete the post
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3000/posts/${post.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`  // Add the Authorization header with the JWT token
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      onDelete(post.id); // Pass the deleted post ID to parent
-      onClose(); // Close the modal
+      onDelete(post.id);
+      onClose();
+      toast.success('Post deleted successfully!');  // Success toast
     } catch (error) {
-      console.error('Error deleting post:', error);
+      toast.error('Failed to delete the post. Please try again.');  // Error toast
     }
   };
 
