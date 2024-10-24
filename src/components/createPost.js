@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { toast } from 'react-toastify';  // Import toast for notifications
 
 const CreatePost = () => {
-  // States for modal and form data
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
 
-  // Handle form submission (create post)
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');  // Get JWT token from localStorage
+    const token = localStorage.getItem('token');  // Get JWT token
 
     if (!token) {
       setError('You must be logged in to create a post.');
+      toast.error('You must be logged in to create a post.');  // Show error toast
       return;
     }
 
@@ -30,18 +30,17 @@ const CreatePost = () => {
       setTitle('');
       setContent('');
       setIsModalOpen(false);
-      console.log('Post created:', response.data);  // Log the created post
+      toast.success('Post created successfully!');  // Show success toast
     } catch (err) {
       setError('Failed to create post. Please try again.');
-      console.error('Error creating post:', err);
+      toast.error('Failed to create post. Please try again.');  // Show error toast
     }
   };
 
-  // Functions to open and close the modal
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setError(null);  // Reset the error message when closing the modal
+    setError(null);  // Reset error
   };
 
   return (
