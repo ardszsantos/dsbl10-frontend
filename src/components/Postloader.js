@@ -18,7 +18,7 @@ const PostRender = () => {
   // Fetch posts from API
   useEffect(() => {
     axios
-      .get('http://localhost:3000/posts')  // Adjust API URL as needed
+      .get(`${process.env.REACT_APP_BACKEND_URL}/posts`)  // Adjust API URL as needed
       .then((response) => {
         setPosts(response.data);
         setLoading(false);

@@ -29,7 +29,7 @@ function AuthenticationPage() {
                          : { email: formData.email, username: formData.username, password: formData.password };
 
     try {
-      const response = await axios.post(`http://localhost:3000${endpoint}`, data);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, data);
       localStorage.setItem('token', response.data.token);
       navigate('/home');
       toast.success(isLogin ? 'Logged in successfully!' : 'Registered successfully!');  // Success toast

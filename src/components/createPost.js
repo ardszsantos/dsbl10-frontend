@@ -21,7 +21,7 @@ const CreatePost = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/posts',
+        `${process.env.REACT_APP_BACKEND_URL}/posts`,
         { title, content },  // Post data
         { headers: { Authorization: `Bearer ${token}` } }  // Auth header
       );

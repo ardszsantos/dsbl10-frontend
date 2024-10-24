@@ -8,7 +8,7 @@ const DeletePost = ({ post, isOpen, onClose, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/posts/${post.id}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       onDelete(post.id);

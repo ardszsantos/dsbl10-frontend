@@ -11,7 +11,7 @@ const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
   const handleUpdate = async () => {
     try {
       const updatedPost = { title, content };
-      await axios.patch(`http://localhost:3000/posts/${post.id}`, updatedPost, {
+      await axios.patch(`${process.env.REACT_APP_BACKEND_URL}/posts/${post.id}`, updatedPost, {
         headers: { Authorization: `Bearer ${token}` }
       });
       onUpdate(post.id, updatedPost);
