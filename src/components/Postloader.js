@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import DeletePost from './deletePost';  // Import DeletePost component
 import UpdatePost from './updatePost';  // Import UpdatePost component
 import ReadPost from './readPost';  // Import ReadPost component
+import { toast } from 'react-toastify';  // Import toast
 
 const PostRender = () => {
   const [posts, setPosts] = useState([]);  // State to hold posts
@@ -23,8 +24,8 @@ const PostRender = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching posts:', error);
         setError('Error fetching posts');
+        toast.error('Error fetching posts.');  // Error toast
         setLoading(false);
       });
   }, []);
@@ -58,11 +59,13 @@ const PostRender = () => {
   // Handle post update
   const handlePostUpdate = (id, updatedPost) => {
     setPosts(posts.map(post => (post.id === id ? { ...post, ...updatedPost } : post)));
+    toast.success('Post updated successfully!');  // Success toast
   };
 
   // Handle post delete
   const handlePostDelete = (id) => {
     setPosts(posts.filter(post => post.id !== id));
+    toast.success('Post deleted successfully!');  // Success toast
   };
 
   if (loading) {
