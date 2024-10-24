@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';  // Import toast
 
 function AuthenticationPage() {
   const [isLogin, setIsLogin] = useState(true);
-  // Include username in the initial state for registration
   const [formData, setFormData] = useState({
     email: '',
     username: '',
     password: '',
-    identifier: '' // This will be used for login
+    identifier: ''
   });
   const navigate = useNavigate();
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    // Reset form data when toggling between login and register
     setFormData({ email: '', username: '', password: '', identifier: '' });
   };
 
@@ -33,9 +32,9 @@ function AuthenticationPage() {
       const response = await axios.post(`http://localhost:3000${endpoint}`, data);
       localStorage.setItem('token', response.data.token);
       navigate('/home');
+      toast.success(isLogin ? 'Logged in successfully!' : 'Registered successfully!');  // Success toast
     } catch (error) {
-      console.error('Authentication Error:', error.response.data.message);
-      alert(error.response.data.message);
+      toast.error(error.response.data.message || 'Authentication failed. Please try again.');  // Error toast
     }
   };
 
