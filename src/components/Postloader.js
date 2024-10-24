@@ -70,7 +70,8 @@ const Postloader = () => {
   // Handle post update and refresh the posts
   const handlePostUpdate = (id, updatedPost) => {
     fetchPosts();  // Refresh the posts list from API after updating
-    toast.success('Post updated successfully!');  // Success toast
+    toast.success('Post updated successfully!');
+      // Success toast
   };
 
   // Handle post delete and refresh the posts

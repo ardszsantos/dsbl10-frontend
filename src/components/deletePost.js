@@ -15,7 +15,8 @@ const DeletePost = ({ post, isOpen, onClose, onDelete, refreshPosts }) => {
       onDelete(post.id);
       onClose();
       toast.success('Post deleted successfully!');
-      refreshPosts();  // Refresh the posts list after deleting the post
+      refreshPosts();
+      window.location.reload();   // Refresh the posts list after deleting the post
     } catch (error) {
       toast.error('Failed to delete the post. Please try again.');
     }

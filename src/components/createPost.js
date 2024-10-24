@@ -38,7 +38,8 @@ const CreatePost = ({ refreshPosts }) => {
       setContent('');
       closeModal();  // Close the modal after success
       toast.success('Post created successfully!');  // Show success toast
-      refreshPosts();  // Refresh the posts list after creating a new post
+      refreshPosts();
+      window.location.reload();  // Refresh the posts list after creating a new post
     } catch (err) {
       setError('Failed to create post. Please try again.');
       toast.error('Failed to create post. Please try again.');  // Show error toast
