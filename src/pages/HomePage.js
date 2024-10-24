@@ -6,25 +6,18 @@ function HomePage() {
   return (
     <>
       <NavBar />
-      <div className="flex flex-col items-center min-h-screen bg-gray-300">
-        <h1 className="text-3xl font-bold mb-4 mt-20">Latest Posts:</h1>
-        <div className="posts-area bg-white shadow-md rounded-lg w-full md:w-3/4 lg:w-2/3 xl:w-1/2">
-          <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Posts</h2>
-            <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-left">#</th>
-                  <th className="py-2 px-4 border-b text-left">Title</th>
-                  <th className="py-2 px-4 border-b text-left">Author</th>
-                  <th className="py-2 px-4 border-b text-left">Date</th>
-                  <th className="py-2 px-4 border-b text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <PostRender /> {/* Injecting PostRender directly into the table */}
-              </tbody>
-            </table>
+      <div className="flex flex-col items-center min-h-screen bg-gray-100">
+        {/* Título da página */}
+        <h1 className="text-3xl font-bold mb-6 mt-12 text-gray-800">Latest Posts</h1>
+
+        {/* Área de posts, com largura ajustável conforme o tamanho da tela */}
+        <div className="posts-area bg-white shadow-lg rounded-lg w-full max-w-screen-lg p-6">
+          {/* Título da seção de posts */}
+          <h2 className="text-2xl font-semibold text-gray-700 mb-4">Posts</h2>
+
+          {/* Container responsivo que renderiza os posts */}
+          <div className="flex flex-col space-y-4">
+            <PostRender /> {/* Renderiza os posts diretamente aqui */}
           </div>
         </div>
       </div>

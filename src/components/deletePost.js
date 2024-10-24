@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import { toast } from 'react-toastify';  // Import toast
 
-const DeletePost = ({ post, isOpen, onClose, onDelete }) => {
+const DeletePost = ({ post, isOpen, onClose, onDelete, refreshPosts }) => {
   const token = localStorage.getItem('token');
 
   const handleDelete = async () => {
@@ -11,13 +11,16 @@ const DeletePost = ({ post, isOpen, onClose, onDelete }) => {
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
       onDelete(post.id);
       onClose();
-      toast.success('Post deleted successfully!');  // Success toast
+      toast.success('Post deleted successfully!');
+      refreshPosts();  // Refresh the posts list after deleting the post
     } catch (error) {
-      toast.error('Failed to delete the post. Please try again.');  // Error toast
+      toast.error('Failed to delete the post. Please try again.');
     }
   };
+
 
   return (
     <Modal

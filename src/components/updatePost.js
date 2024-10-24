@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import { toast } from 'react-toastify';  // Import toast
 
-const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
+const UpdatePost = ({ post, isOpen, onClose, onUpdate, refreshPosts }) => {
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.content);
   const token = localStorage.getItem('token');
@@ -14,11 +14,13 @@ const UpdatePost = ({ post, isOpen, onClose, onUpdate }) => {
       await axios.patch(`${process.env.REACT_APP_BACKEND_URL}/posts/${post.id}`, updatedPost, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
       onUpdate(post.id, updatedPost);
       onClose();
-      toast.success('Post updated successfully!');  // Success toast
+      toast.success('Post updated successfully!');
+      refreshPosts();  // Refresh the posts list after updating the post
     } catch (error) {
-      toast.error('Failed to update post. Please try again.');  // Error toast
+      toast.error('Failed to update post. Please try again.');
     }
   };
 
