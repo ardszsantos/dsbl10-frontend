@@ -42,7 +42,7 @@ const CreatePost = ({ refreshPosts }) => {
       window.location.reload();  // Refresh the posts list after creating a new post
     } catch (err) {
       setError('Failed to create post. Please try again.');
-      toast.error('Failed to create post. Please try again.');  // Show error toast
+      console.log(err)  // Show error toast
     }
   };
 
