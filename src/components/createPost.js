@@ -13,25 +13,33 @@ const CreatePost = ({ refreshPosts }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
 
+  // Minimal toolbar optimized for mobile use
   const modules = {
     toolbar: [
-      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-      [{ 'size': [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, 
-       {'indent': '-1'}, {'indent': '+1'}],
-      ['link', 'image', 'video'],
-      ['clean']
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link', 'image'],
+      ['clean'] // For clearing the format
     ],
-    clipboard: { matchVisual: false }
+    clipboard: { matchVisual: false }  // Avoid preserving weird formats from clipboard
   };
   
   const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video'
+    'bold', 'italic', 'underline',
+    'list', 'bullet',
+    'link', 'image'
   ];
+
+  // Sanitize the input and prevent excessive spacing
+  const handleQuillChange = (value, delta, source, editor) => {
+    const plainText = editor.getText().trim(); // Trim whitespace and excess lines
+    if (plainText.length === 0) {
+      setError('Content cannot be empty or contain only spaces.');
+      return;
+    }
+    setError(null);
+    setContent(value);
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -47,6 +55,11 @@ const CreatePost = ({ refreshPosts }) => {
     if (!token) {
       setError('You must be logged in to create a post.');
       toast.error('You must be logged in to create a post.');
+      return;
+    }
+
+    if (content.trim().length === 0) {
+      setError('Post content cannot be empty.');
       return;
     }
 
@@ -74,40 +87,40 @@ const CreatePost = ({ refreshPosts }) => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="absolute top-1/2 left-1/2 max-w-5xl w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg"
+        className="absolute top-1/2 left-1/2 max-w-5xl w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-white flex flex-col p-6 rounded-lg shadow-lg max-h-screen overflow-hidden"
         overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50"
         contentLabel="Create Post"
       >
         <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        <form onSubmit={handleCreatePost} className="space-y-4">
-          <div>
+        <form onSubmit={handleCreatePost} className="flex flex-col h-full space-y-4">
+          <div className="flex-grow overflow-y-auto">
             <label className="block text-sm font-bold mb-2">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border rounded-lg mb-4"
               placeholder="Enter post title"
-              maxLength={136}
+              maxLength={50}
               required
             />
-          </div>
 
-          <div>
             <label className="block text-sm font-bold mb-2">Content</label>
             <ReactQuill
               value={content}
-              onChange={setContent}
+              onChange={handleQuillChange}  // Custom handler to trim spaces
               modules={modules}
               formats={formats}
               bounds={'.app'}
               placeholder="Enter post content"
+              className="w-full h-64"
             />
           </div>
 
-          <div className="flex justify-end space-x-4">
+          {/* Buttons Section */}
+          <div className="flex justify-end space-x-4 mt-4">
             <button
               type="button"
               onClick={closeModal}
