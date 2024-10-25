@@ -26,7 +26,7 @@ const ReadPostPage = () => {
       }
     };
     fetchPost();
-  }, [id]);
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -53,13 +53,15 @@ const ReadPostPage = () => {
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">{post.title}</h1>
       <div className="flex justify-center">
+      <div className="quill-content w-full max-w-4xl mx-auto">
         <ReactQuill
-          value={post.content}
-          readOnly={true}
-          theme="snow"
-          modules={{ toolbar: false }}
-          className="w-full max-w-4xl prose lg:prose-xl mx-auto p-4 bg-transparent"
+            value={post.content}
+            readOnly={true}
+            theme="snow"
+            modules={{ toolbar: false }}
+            className="w-full"
         />
+        </div>
       </div>
     </div>
   );
