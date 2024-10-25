@@ -15,11 +15,31 @@ function AuthenticationPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    
     if (token) {
-      toast.info('You are already logged in.');  // Inform the user
-      navigate('/home');  // Redirect to the home page if logged in
+      try {
+        // Decode the token to extract its expiration time
+        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+        const isExpired = tokenPayload.exp * 1000 < Date.now();  // Check expiration
+        
+        if (isExpired) {
+          // If the token is expired, remove it and redirect to login
+          localStorage.removeItem('token');
+          toast.warning('Session expired. Please log in again.');
+        } else {
+          // If the token is valid, proceed to home
+          toast.info('You are already logged in.');
+          navigate('/home');
+        }
+      } catch (error) {
+        // If decoding the token fails, remove it and redirect to login
+        console.error('Invalid token format', error);
+        localStorage.removeItem('token');
+        navigate('/');
+        toast.error('Invalid session. Please log in again.');
+      }
     }
-  }, []);  // Empty dependency array ensures this runs once on mount
+  }, [navigate]);  // Add 'navigate' as a dependency for the useEffect
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
