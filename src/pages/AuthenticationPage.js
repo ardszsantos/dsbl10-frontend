@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';  // Import toast
@@ -12,6 +12,14 @@ function AuthenticationPage() {
     identifier: ''
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      toast.info('You are already logged in.');  // Inform the user
+      navigate('/home');  // Redirect to the home page if logged in
+    }
+  }, []);  // Empty dependency array ensures this runs once on mount
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
