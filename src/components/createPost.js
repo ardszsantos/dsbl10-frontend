@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import { toast } from 'react-toastify';  // Import toast for notifications
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { toast } from 'react-toastify';
+
+Modal.setAppElement('#root');  // Properly set the base element for accessibility
 
 const CreatePost = ({ refreshPosts }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -9,66 +13,76 @@ const CreatePost = ({ refreshPosts }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
 
-  // Define openModal and closeModal functions
-  const openModal = () => setIsModalOpen(true);  // Opens the modal
+  const modules = {
+    toolbar: [
+      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+      [{ 'size': [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, 
+       {'indent': '-1'}, {'indent': '+1'}],
+      ['link', 'image', 'video'],
+      ['clean']
+    ],
+    clipboard: { matchVisual: false }
+  };
+  
+  const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+  ];
+
+  const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
-    setIsModalOpen(false);  // Closes the modal
-    setError(null);  // Resets error when modal is closed
+    setIsModalOpen(false);
+    setError(null);  // Reset error when modal is closed
+    setTitle('');  // Clear title
+    setContent('');  // Clear content
   };
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');  // Get JWT token
-
+    const token = localStorage.getItem('token');
     if (!token) {
       setError('You must be logged in to create a post.');
-      toast.error('You must be logged in to create a post.');  // Show error toast
+      toast.error('You must be logged in to create a post.');
       return;
     }
 
     try {
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/posts`,
-        { title, content },  // Post data
-        { headers: { Authorization: `Bearer ${token}` } }  // Auth header
+        { title, content },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // Reset the form and close the modal
-      setTitle('');
-      setContent('');
-      closeModal();  // Close the modal after success
-      toast.success('Post created successfully!');  // Show success toast
+      closeModal();
+      toast.success('Post created successfully!');
       refreshPosts();
-      window.location.reload();  // Refresh the posts list after creating a new post
     } catch (err) {
       setError('Failed to create post. Please try again.');
-      console.log(err)  // Show error toast
+      console.error(err);
     }
   };
 
   return (
     <>
-      <button
-        onClick={openModal}  // Correctly defined function
-        className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
-      >
+      <button onClick={openModal} className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600">
         Create Post
       </button>
 
-      {/* Modal for creating post */}
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={closeModal}  // Correctly defined function
-        contentLabel="Create Post"
-        className="bg-white rounded-lg shadow-lg p-6 max-w-lg mx-auto mt-20"
+        onRequestClose={closeModal}
+        className="absolute top-1/2 left-1/2 max-w-5xl w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg"
         overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50"
+        contentLabel="Create Post"
       >
         <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
-
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        <form onSubmit={handleCreatePost}>
-          <div className="mb-4">
+        <form onSubmit={handleCreatePost} className="space-y-4">
+          <div>
             <label className="block text-sm font-bold mb-2">Title</label>
             <input
               type="text"
@@ -81,22 +95,22 @@ const CreatePost = ({ refreshPosts }) => {
             />
           </div>
 
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-bold mb-2">Content</label>
-            <textarea
+            <ReactQuill
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              onChange={setContent}
+              modules={modules}
+              formats={formats}
+              bounds={'.app'}
               placeholder="Enter post content"
-              rows="4"
-              required
             />
           </div>
 
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              onClick={closeModal}  // Close modal button
+              onClick={closeModal}
               className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
             >
               Cancel
