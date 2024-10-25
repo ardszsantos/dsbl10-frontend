@@ -13,12 +13,12 @@ const CreatePost = ({ refreshPosts }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
 
-  // Minimal toolbar optimized for mobile use
+  // Toolbar allowing image insertion
   const modules = {
     toolbar: [
       ['bold', 'italic', 'underline'],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
+      ['link', 'image'],  // Ensure image upload is enabled
       ['clean'] // For clearing the format
     ],
     clipboard: { matchVisual: false }  // Avoid preserving weird formats from clipboard
@@ -27,16 +27,21 @@ const CreatePost = ({ refreshPosts }) => {
   const formats = [
     'bold', 'italic', 'underline',
     'list', 'bullet',
-    'link', 'image'
+    'link', 'image'  // Allow image and GIF uploads
   ];
 
-  // Sanitize the input and prevent excessive spacing
   const handleQuillChange = (value, delta, source, editor) => {
-    const plainText = editor.getText().trim(); // Trim whitespace and excess lines
-    if (plainText.length === 0) {
-      setError('Content cannot be empty or contain only spaces.');
-      return;
+    const plainText = editor.getText().trim();
+    const htmlContent = editor.getHTML();
+    const imageTagPresent = htmlContent.includes('<img');
+
+    // Allow posts that contain either text or images
+    if (plainText.length === 0 && !imageTagPresent) {
+        setError('Content cannot be empty or contain only spaces.');
+        return;
     }
+
+    // Clear the error message if content is valid
     setError(null);
     setContent(value);
   };
@@ -58,7 +63,7 @@ const CreatePost = ({ refreshPosts }) => {
       return;
     }
 
-    if (content.trim().length === 0) {
+    if (content.trim().length === 0 && !content.includes('<img')) {
       setError('Post content cannot be empty.');
       return;
     }
