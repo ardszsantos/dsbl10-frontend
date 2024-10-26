@@ -13,13 +13,14 @@ const PostLoader = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(null);
   const [currentPost, setCurrentPost] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10); // Set posts per page to 10
   const navigate = useNavigate();
 
-  // Definindo fetchPosts
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/posts`);
-      setPosts(response.data);
+      setPosts(response.data.reverse()); // Reverse the posts to show the latest first
       setLoading(false);
     } catch (error) {
       setError('Error fetching posts');
@@ -50,6 +51,16 @@ const PostLoader = () => {
     setIsMenuOpen(isMenuOpen === id ? null : id);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+
   if (loading) {
     return <div className="text-center py-4">Loading...</div>;
   }
@@ -60,13 +71,15 @@ const PostLoader = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {posts.slice().reverse().map((post, index) => (
+      {currentPosts.map((post, index) => (
         <div
           key={post.id}
           className="flex items-center justify-between p-4 mb-4 border border-gray-200 rounded-lg shadow-sm"
         >
           <div>
-            <span className="text-gray-600 font-bold mr-2">#{index + 1}</span>
+            <span className="text-gray-600 font-bold mr-2">
+              #{indexOfFirstPost + index + 1}
+            </span>
             <button
               className="text-blue-600 font-bold text-lg hover:underline"
               onClick={() => openReadPostPage(post.id)}
@@ -74,7 +87,8 @@ const PostLoader = () => {
               {post.title}
             </button>
             <p className="text-gray-500 text-sm">
-              by {post.author?.username || 'Unknown'} on {new Date(post.createdAt).toLocaleDateString()}
+              by {post.author?.username || 'Unknown'} on{' '}
+              {new Date(post.createdAt).toLocaleDateString()}
             </p>
           </div>
 
@@ -104,13 +118,26 @@ const PostLoader = () => {
         </div>
       ))}
 
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+
       {/* Edit Post Modal */}
       {currentPost && (
         <UpdatePost
           post={currentPost}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onUpdate={fetchPosts} // Passando fetchPosts como prop
+          onUpdate={fetchPosts}
         />
       )}
 
@@ -120,7 +147,7 @@ const PostLoader = () => {
           post={currentPost}
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={fetchPosts} // Passando fetchPosts como prop
+          onDelete={fetchPosts}
         />
       )}
     </div>
