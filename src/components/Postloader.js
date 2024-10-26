@@ -14,13 +14,19 @@ const PostLoader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(null);
   const [currentPost, setCurrentPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0); // State to hold total pages
   const [postsPerPage] = useState(10); // Set posts per page to 10
   const navigate = useNavigate();
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (page = 1) => {
+    setLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/posts`);
-      setPosts(response.data.reverse()); // Reverse the posts to show the latest first
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/posts?page=${page}&limit=${postsPerPage}`
+      );
+      const { posts, totalPages } = response.data;
+      setPosts(posts);
+      setTotalPages(totalPages);
       setLoading(false);
     } catch (error) {
       setError('Error fetching posts');
@@ -30,8 +36,8 @@ const PostLoader = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts(currentPage);
+  }, [currentPage]);
 
   const openReadPostPage = (postId) => {
     navigate(`/post/${postId}`);
@@ -55,12 +61,6 @@ const PostLoader = () => {
     setCurrentPage(pageNumber);
   };
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-
   if (loading) {
     return <div className="text-center py-4">Loading...</div>;
   }
@@ -71,14 +71,14 @@ const PostLoader = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {currentPosts.map((post, index) => (
+      {posts.map((post, index) => (
         <div
           key={post.id}
           className="flex items-center justify-between p-4 mb-4 border border-gray-200 rounded-lg shadow-sm"
         >
           <div>
             <span className="text-gray-600 font-bold mr-2">
-              #{indexOfFirstPost + index + 1}
+              #{(currentPage - 1) * postsPerPage + index + 1}
             </span>
             <button
               className="text-blue-600 font-bold text-lg hover:underline"
@@ -137,7 +137,7 @@ const PostLoader = () => {
           post={currentPost}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onUpdate={fetchPosts}
+          onUpdate={() => fetchPosts(currentPage)} // Refresh current page after update
         />
       )}
 
@@ -147,7 +147,7 @@ const PostLoader = () => {
           post={currentPost}
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={fetchPosts}
+          onDelete={() => fetchPosts(currentPage)} // Refresh current page after delete
         />
       )}
     </div>
