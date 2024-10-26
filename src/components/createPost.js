@@ -4,30 +4,31 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
+import { Rings } from 'react-loader-spinner'; // Importing the spinner component
 
-Modal.setAppElement('#root');  // Properly set the base element for accessibility
+Modal.setAppElement('#root');
 
 const CreatePost = ({ refreshPosts }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
-  // Toolbar allowing image insertion
   const modules = {
     toolbar: [
       ['bold', 'italic', 'underline'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],  // Ensure image upload is enabled
-      ['clean'] // For clearing the format
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      ['clean'],
     ],
-    clipboard: { matchVisual: false }  // Avoid preserving weird formats from clipboard
+    clipboard: { matchVisual: false },
   };
-  
+
   const formats = [
     'bold', 'italic', 'underline',
     'list', 'bullet',
-    'link', 'image'  // Allow image and GIF uploads
+    'link', 'image',
   ];
 
   const handleQuillChange = (value, delta, source, editor) => {
@@ -35,13 +36,11 @@ const CreatePost = ({ refreshPosts }) => {
     const htmlContent = editor.getHTML();
     const imageTagPresent = htmlContent.includes('<img');
 
-    // Allow posts that contain either text or images
     if (plainText.length === 0 && !imageTagPresent) {
-        setError('Content cannot be empty or contain only spaces.');
-        return;
+      setError('Content cannot be empty or contain only spaces.');
+      return;
     }
 
-    // Clear the error message if content is valid
     setError(null);
     setContent(value);
   };
@@ -49,9 +48,10 @@ const CreatePost = ({ refreshPosts }) => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setError(null);  // Reset error when modal is closed
-    setTitle('');  // Clear title
-    setContent('');  // Clear content
+    setError(null);
+    setTitle('');
+    setContent('');
+    setLoading(false); // Reset loading state
   };
 
   const handleCreatePost = async (e) => {
@@ -68,6 +68,8 @@ const CreatePost = ({ refreshPosts }) => {
       return;
     }
 
+    setLoading(true); // Set loading state to true to disable button and show loader
+
     try {
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/posts`,
@@ -78,8 +80,9 @@ const CreatePost = ({ refreshPosts }) => {
       toast.success('Post created successfully!');
       refreshPosts();
     } catch (err) {
-      setError('Failed to create post. Please try again.');
+      setError('Tente re-logar, auth ta cagada por enquanto!.');
       console.error(err);
+      setLoading(false); // Reset loading state on error
     }
   };
 
@@ -115,7 +118,7 @@ const CreatePost = ({ refreshPosts }) => {
             <label className="block text-sm font-bold mb-2">Content</label>
             <ReactQuill
               value={content}
-              onChange={handleQuillChange}  // Custom handler to trim spaces
+              onChange={handleQuillChange}
               modules={modules}
               formats={formats}
               bounds={'.app'}
@@ -130,14 +133,25 @@ const CreatePost = ({ refreshPosts }) => {
               type="button"
               onClick={closeModal}
               className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              disabled={loading} // Disable the cancel button while loading
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${loading ? 'cursor-not-allowed' : ''}`}
+              disabled={loading} // Disable the create button while loading
             >
-              Create Post
+              {loading ? (
+                <Rings
+                  height="24"
+                  width="24"
+                  color="#ffffff"
+                  ariaLabel="loading-indicator"
+                />
+              ) : (
+                'Create Post'
+              )}
             </button>
           </div>
         </form>
