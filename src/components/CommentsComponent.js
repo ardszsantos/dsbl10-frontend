@@ -173,7 +173,7 @@ const CommentsComponent = ({ postId }) => {
 
       {/* Comments List */}
       {comments.length > 0 ? (
-        comments.map((comment) => (
+        [...comments].reverse().map((comment) => (
           <div
             key={comment.id}
             className="bg-white p-4 mb-4 rounded shadow"
