@@ -22,7 +22,7 @@ const NavBar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo or Brand Name */}
         <div className="text-white text-lg font-bold">
-          Suplob
+          Ovóciles
         </div>
 
         {/* Desktop Menu */}
