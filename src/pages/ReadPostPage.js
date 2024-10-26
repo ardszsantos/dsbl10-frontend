@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import { FaArrowLeft } from 'react-icons/fa';
 import 'react-quill/dist/quill.snow.css';
 import { ThreeDots } from 'react-loader-spinner';
+import CommentsComponent from '../components/CommentsComponent';
 
 const ReadPostPage = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ const ReadPostPage = () => {
   const [post, setPost] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -63,6 +65,8 @@ const ReadPostPage = () => {
         />
         </div>
       </div>
+      {/* Comments Component */}
+      <CommentsComponent postId={id} />
     </div>
   );
 };
