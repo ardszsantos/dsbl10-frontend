@@ -69,7 +69,7 @@ function AuthenticationPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold text-center">
+        <h2 className="text-2xl text-black font-bold text-center">
           {isLogin ? 'Login' : 'Register'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +79,7 @@ function AuthenticationPage() {
               <input
                 type="text"
                 name="identifier"
-                className="w-full px-3 py-2 border rounded"
+                className="w-full px-3 py-2 border text-black bg-white rounded"
                 value={formData.identifier}
                 onChange={handleChange}
                 required
@@ -116,7 +116,7 @@ function AuthenticationPage() {
             <input
               type="password"
               name="password"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 bg-white  text-black py-2 border rounded"
               value={formData.password}
               onChange={handleChange}
               required
