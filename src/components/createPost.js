@@ -95,27 +95,27 @@ const CreatePost = ({ refreshPosts }) => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="absolute top-1/2 left-1/2 max-w-5xl w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-white flex flex-col p-6 rounded-lg shadow-lg max-h-screen overflow-hidden"
+        className="absolute top-1/2 left-1/2 max-w-5xl w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 text-black dark:text-white flex flex-col p-6 rounded-lg shadow-lg max-h-screen overflow-hidden"
         overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50"
         contentLabel="Create Post"
       >
-        <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Create a New Post</h2>
+        {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
 
         <form onSubmit={handleCreatePost} className="flex flex-col h-full space-y-4">
           <div className="flex-grow overflow-y-auto">
-            <label className="block text-sm font-bold mb-2">Title</label>
+            <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-gray-100">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg mb-4"
+              className="w-full px-3 py-2 border dark:border-gray-600 rounded-lg mb-4 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="Enter post title"
               maxLength={50}
               required
             />
 
-            <label className="block text-sm font-bold mb-2">Content</label>
+            <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-gray-100">Content</label>
             <ReactQuill
               value={content}
               onChange={handleQuillChange}
@@ -123,7 +123,7 @@ const CreatePost = ({ refreshPosts }) => {
               formats={formats}
               bounds={'.app'}
               placeholder="Enter post content"
-              className="w-full h-64"
+              className="w-full h-64  dark:text-white"
             />
           </div>
 
@@ -132,14 +132,14 @@ const CreatePost = ({ refreshPosts }) => {
             <button
               type="button"
               onClick={closeModal}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-500 dark:bg-gray-600 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-700"
               disabled={loading} // Disable the cancel button while loading
             >
               Cancel
             </button>
             <button
               type="submit"
-              className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${loading ? 'cursor-not-allowed' : ''}`}
+              className={`px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-800 ${loading ? 'cursor-not-allowed' : ''}`}
               disabled={loading} // Disable the create button while loading
             >
               {loading ? (
