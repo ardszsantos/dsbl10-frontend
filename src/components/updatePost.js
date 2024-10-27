@@ -29,31 +29,31 @@ const UpdatePost = ({ post, isOpen, onClose, onUpdate, refreshPosts }) => {
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Edit Post"
-      className="bg-white rounded-lg shadow-lg p-6 max-w-lg mx-auto mt-20"
-      overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50"
+      className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg shadow-lg p-6 max-w-lg mx-auto mt-20"
+      overlayClassName="fixed inset-0 bg-gray-600  bg-opacity-50"
     >
-      <h2 className="text-2xl font-bold mb-4">Edit Post</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Post</h2>
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Title</label>
+        <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Title</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-2 border bg-white dark:bg-gray-700 dark:text-white border-gray-300 dark:border-gray-600 rounded"
         />
       </div>
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Content</label>
+        <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Content</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-2 border bg-white dark:bg-gray-700 dark:text-white border-gray-300 dark:border-gray-600 rounded"
           rows="5"
         />
       </div>
       <div className="flex justify-end">
-        <button onClick={handleUpdate} className="text-blue-500 hover:underline mr-4">Update Post</button>
-        <button onClick={onClose} className="text-red-500 hover:underline">Cancel</button>
+        <button onClick={handleUpdate} className="text-blue-500 dark:text-blue-400 hover:underline mr-4">Update Post</button>
+        <button onClick={onClose} className="text-red-500 dark:text-red-400 hover:underline">Cancel</button>
       </div>
     </Modal>
   );
