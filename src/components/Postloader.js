@@ -74,7 +74,7 @@ const PostLoader = () => {
       {posts.map((post, index) => (
         <div
           key={post.id}
-          className="flex items-center justify-between p-4 mb-4 border border-gray-200 rounded-lg shadow-sm"
+          className="flex items-center justify-between p-4 mb-4 border border-blue-400 rounded-lg shadow-sm"
         >
           <div>
             <span className="text-gray-600 font-bold mr-2">
