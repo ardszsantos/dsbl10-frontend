@@ -92,7 +92,7 @@ function AuthenticationPage() {
                 <input
                   type="email"
                   name="email"
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 black bg-white border rounded"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -103,7 +103,7 @@ function AuthenticationPage() {
                 <input
                   type="text"
                   name="username"
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border black bg-white rounded"
                   value={formData.username}
                   onChange={handleChange}
                   required
