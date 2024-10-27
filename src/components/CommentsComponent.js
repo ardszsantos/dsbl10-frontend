@@ -1,4 +1,3 @@
-// src/components/CommentsComponent.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -15,7 +14,6 @@ const CommentsComponent = ({ postId }) => {
   const [deletingCommentId, setDeletingCommentId] = useState(null); // State for delete loading
 
   useEffect(() => {
-    // Fetch comments for the post
     const fetchComments = async () => {
       try {
         const response = await axios.get(
@@ -33,7 +31,6 @@ const CommentsComponent = ({ postId }) => {
   }, [postId]);
 
   useEffect(() => {
-    // Extract user ID from the token
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -46,7 +43,6 @@ const CommentsComponent = ({ postId }) => {
     }
   }, []);
 
-  // Handle submitting a new comment
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) {
@@ -78,7 +74,6 @@ const CommentsComponent = ({ postId }) => {
     }
   };
 
-  // Handle deleting a comment
   const handleDeleteComment = async (commentId) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       setDeletingCommentId(commentId);
@@ -120,21 +115,19 @@ const CommentsComponent = ({ postId }) => {
 
   return (
     <div className="w-full lg:w-10/12 mx-auto mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Comments</h2>
 
-      {/* Display error message */}
       {error && (
-        <div className="text-center py-2 text-red-500">
+        <div className="text-center py-2 text-red-500 dark:text-red-400">
           {error}
         </div>
       )}
 
-      {/* Comment Form */}
       {userId ? (
         <form onSubmit={handleCommentSubmit} className="mb-6 flex items-center w-full">
           <input
             type="text"
-            className="flex-grow p-3 border rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow bg-white p-3 border rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
             placeholder="Write a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -142,7 +135,7 @@ const CommentsComponent = ({ postId }) => {
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-full hover:bg-blue-600 flex items-center"
+            className="bg-blue-500 dark:bg-blue-700 text-white px-4 py-2 rounded-r-full hover:bg-blue-600 dark:hover:bg-blue-800 flex items-center"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -163,7 +156,7 @@ const CommentsComponent = ({ postId }) => {
         <p className="mb-6">
           <a
             href="/"
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 dark:text-blue-400 hover:underline"
           >
             Log in
           </a>{' '}
@@ -171,23 +164,21 @@ const CommentsComponent = ({ postId }) => {
         </p>
       )}
 
-      {/* Comments List */}
       {comments.length > 0 ? (
         [...comments].reverse().map((comment) => (
           <div
             key={comment.id}
-            className="bg-white p-4 mb-4 rounded shadow"
+            className="bg-white dark:bg-gray-800 dark:text-white p-4 mb-4 rounded shadow"
           >
             <div className="flex items-center mb-2">
-              <span className="font-semibold">{comment.user.username}</span>
-              <span className="text-gray-500 text-sm ml-2">
+              <span className="font-semibold dark:text-gray-200">{comment.user.username}</span>
+              <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
                 {new Date(comment.createdAt).toLocaleString()}
               </span>
-              {/* Delete Button */}
               {userId && comment.user.id === userId && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="ml-auto text-red-500 hover:text-red-700 flex items-center"
+                  className="ml-auto text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 flex items-center"
                   disabled={deletingCommentId === comment.id}
                 >
                   {deletingCommentId === comment.id ? (
@@ -205,11 +196,11 @@ const CommentsComponent = ({ postId }) => {
                 </button>
               )}
             </div>
-            <p className="text-gray-800">{comment.content}</p>
+            <p className="text-gray-800 dark:text-gray-200">{comment.content}</p>
           </div>
         ))
       ) : (
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           No comments yet. Be the first to comment!
         </p>
       )}
