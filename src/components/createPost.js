@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import FroalaEditorComponent from 'react-froala-wysiwyg';
 import { toast } from 'react-toastify';
-import { Rings } from 'react-loader-spinner'; // Importing the spinner component
+import { Rings } from 'react-loader-spinner';
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+import 'froala-editor/js/plugins.pkgd.min.js';
+import 'froala-editor/js/plugins/image.min.js'; // Import the image plugin
 
 Modal.setAppElement('#root');
 
@@ -13,37 +16,7 @@ const CreatePost = ({ refreshPosts }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image'],
-      ['clean'],
-    ],
-    clipboard: { matchVisual: false },
-  };
-
-  const formats = [
-    'bold', 'italic', 'underline',
-    'list', 'bullet',
-    'link', 'image',
-  ];
-
-  const handleQuillChange = (value, delta, source, editor) => {
-    const plainText = editor.getText().trim();
-    const htmlContent = editor.getHTML();
-    const imageTagPresent = htmlContent.includes('<img');
-
-    if (plainText.length === 0 && !imageTagPresent) {
-      setError('Content cannot be empty or contain only spaces.');
-      return;
-    }
-
-    setError(null);
-    setContent(value);
-  };
+  const [loading, setLoading] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -51,7 +24,7 @@ const CreatePost = ({ refreshPosts }) => {
     setError(null);
     setTitle('');
     setContent('');
-    setLoading(false); // Reset loading state
+    setLoading(false);
   };
 
   const handleCreatePost = async (e) => {
@@ -68,7 +41,7 @@ const CreatePost = ({ refreshPosts }) => {
       return;
     }
 
-    setLoading(true); // Set loading state to true to disable button and show loader
+    setLoading(true);
 
     try {
       await axios.post(
@@ -82,7 +55,7 @@ const CreatePost = ({ refreshPosts }) => {
     } catch (err) {
       setError('Tente re-logar, auth ta cagada por enquanto!.');
       console.error(err);
-      setLoading(false); // Reset loading state on error
+      setLoading(false);
     }
   };
 
@@ -116,31 +89,46 @@ const CreatePost = ({ refreshPosts }) => {
             />
 
             <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-gray-100">Content</label>
-            <ReactQuill
-              value={content}
-              onChange={handleQuillChange}
-              modules={modules}
-              formats={formats}
-              bounds={'.app'}
-              placeholder="Enter post content"
-              className="w-full h-64  dark:text-white"
+            <FroalaEditorComponent
+              tag='textarea'
+              model={content}
+              onModelChange={(newContent) => setContent(newContent)}
+              config={{
+                placeholderText: 'Enter post content',
+                toolbarButtons: {
+                  moreText: {
+                    buttons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontSize', 'color'],
+                  },
+                  moreParagraph: {
+                    buttons: ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat'],
+                  },
+                  moreRich: {
+                    buttons: ['insertImage', 'insertVideo', 'insertLink', 'insertTable'],
+                  },
+                  moreMisc: {
+                    buttons: ['undo', 'redo', 'fullscreen', 'html'],
+                  },
+                },
+                imageUpload: true,
+                toolbarButtonsXS: ['bold', 'italic', 'underline', 'insertImage'], // Mobile-friendly toolbar
+              }}
+              className="w-full h-64 bg-gray-100 dark:bg-gray-700 p-2 dark:text-white"
             />
           </div>
 
-          {/* Buttons Section */}
           <div className="flex justify-end space-x-4 mt-4">
             <button
               type="button"
               onClick={closeModal}
               className="px-4 py-2 bg-gray-500 dark:bg-gray-600 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-700"
-              disabled={loading} // Disable the cancel button while loading
+              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
               className={`px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-800 ${loading ? 'cursor-not-allowed' : ''}`}
-              disabled={loading} // Disable the create button while loading
+              disabled={loading}
             >
               {loading ? (
                 <Rings
