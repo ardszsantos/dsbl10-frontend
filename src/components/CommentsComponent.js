@@ -5,13 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ThreeDots } from 'react-loader-spinner';
 
 const CommentsComponent = ({ postId }) => {
-  const [comments, setComments] = useState([]); // State for comments
-  const [newComment, setNewComment] = useState(''); // State for new comment input
-  const [error, setError] = useState(null); // State for error messages
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const [userId, setUserId] = useState(null); // Authenticated user's ID
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for submit loading
-  const [deletingCommentId, setDeletingCommentId] = useState(null); // State for delete loading
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -35,7 +35,7 @@ const CommentsComponent = ({ postId }) => {
     if (token) {
       try {
         const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-        setUserId(tokenPayload.sub); // Assuming 'sub' contains the user ID
+        setUserId(tokenPayload.sub);
       } catch (error) {
         console.error('Invalid token format', error);
         localStorage.removeItem('token');
@@ -124,10 +124,10 @@ const CommentsComponent = ({ postId }) => {
       )}
 
       {userId ? (
-        <form onSubmit={handleCommentSubmit} className="mb-6 flex items-center w-full">
+        <form onSubmit={handleCommentSubmit} className="mb-6 flex flex-col md:flex-row items-center w-full">
           <input
             type="text"
-            className="flex-grow bg-white p-3 border rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+            className="flex-grow bg-white p-3 border border-gray-300 rounded-t-lg md:rounded-l-lg md:rounded-tr-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 transition-all duration-200"
             placeholder="Write a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -135,7 +135,7 @@ const CommentsComponent = ({ postId }) => {
           />
           <button
             type="submit"
-            className="bg-blue-500 dark:bg-blue-700 text-white px-4 py-2 rounded-r-full hover:bg-blue-600 dark:hover:bg-blue-800 flex items-center"
+            className="w-full md:w-auto bg-blue-500 dark:bg-blue-700 text-white px-4 py-2 rounded-b-lg md:rounded-r-lg md:rounded-bl-none hover:bg-blue-600 dark:hover:bg-blue-800 flex items-center justify-center transition-all duration-200"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -153,7 +153,7 @@ const CommentsComponent = ({ postId }) => {
           </button>
         </form>
       ) : (
-        <p className="mb-6">
+        <p className="mb-6 text-gray-700 dark:text-gray-300">
           <a
             href="/"
             className="text-blue-500 dark:text-blue-400 hover:underline"
@@ -168,7 +168,7 @@ const CommentsComponent = ({ postId }) => {
         [...comments].reverse().map((comment) => (
           <div
             key={comment.id}
-            className="bg-white dark:bg-gray-800 dark:text-white p-4 mb-4 rounded shadow"
+            className="bg-white dark:bg-gray-800 dark:text-white p-4 mb-4 rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl"
           >
             <div className="flex items-center mb-2">
               <span className="font-semibold dark:text-gray-200">{comment.user.username}</span>
@@ -178,7 +178,7 @@ const CommentsComponent = ({ postId }) => {
               {userId && comment.user.id === userId && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="ml-auto text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 flex items-center"
+                  className="ml-auto text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 flex items-center transition-all duration-200"
                   disabled={deletingCommentId === comment.id}
                 >
                   {deletingCommentId === comment.id ? (
@@ -196,7 +196,7 @@ const CommentsComponent = ({ postId }) => {
                 </button>
               )}
             </div>
-            <p className="text-gray-800 dark:text-gray-200">{comment.content}</p>
+            <p className="text-gray-800 dark:text-gray-200 break-words">{comment.content}</p>
           </div>
         ))
       ) : (
