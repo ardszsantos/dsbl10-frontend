@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
 import { FaArrowLeft } from 'react-icons/fa';
-import 'react-quill/dist/quill.snow.css';
 import { ThreeDots } from 'react-loader-spinner';
 import CommentsComponent from '../components/CommentsComponent';
 import NavBar from '../components/navbar';
@@ -54,19 +52,16 @@ const ReadPostPage = () => {
             Back
           </button>
         </div>
-        <h1 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-gray-100">{post.title}</h1>
         <div className="flex justify-center">
-          <div className="quill-content w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-lg">
-            <ReactQuill
-              value={post.content}
-              readOnly={true}
-              theme="snow"
-              modules={{ toolbar: false }}
-              className="w-full"
+          <div className="w-full max-w-3xl bg-white dark:bg-gray-800 text-black dark:text-white p-6 rounded-lg shadow-lg">
+            <h1 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-gray-100">{post.title}</h1>
+            <div
+              className="post-content w-full text-justify leading-relaxed break-words overflow-hidden"
+              style={{ whiteSpace: 'pre-wrap' }}
+              dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
         </div>
-        {/* Comments Component */}
         <CommentsComponent postId={id} />
       </div>
     </>
