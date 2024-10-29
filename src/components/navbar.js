@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from './createPost';
+import NotificationInbox from './notificationComponent';
 import { toast } from 'react-toastify';
 import { FaSun, FaMoon } from 'react-icons/fa';
 
@@ -43,6 +44,7 @@ const NavBar = () => {
             {isDarkMode ? <FaSun /> : <FaMoon />}
           </button>
 
+          <NotificationInbox /> {/* Notification component here */}
           <CreatePost />
 
           <button
@@ -74,6 +76,7 @@ const NavBar = () => {
             {isDarkMode ? <FaSun /> : <FaMoon />} <span className="ml-2">Toggle Theme</span>
           </button>
           <CreatePost />
+          <NotificationInbox /> {/* Notification component in mobile menu */}
           <button
             onClick={handleLogout}
             className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
