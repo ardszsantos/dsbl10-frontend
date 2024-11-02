@@ -53,19 +53,29 @@ function AuthenticationPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isLogin ? '/auth/login' : '/auth/register';
-    const data = isLogin ? { identifier: formData.identifier, password: formData.password }
-                         : { email: formData.email, username: formData.username, password: formData.password };
-
+    const data = isLogin
+      ? { identifier: formData.identifier, password: formData.password }
+      : { email: formData.email, username: formData.username, password: formData.password };
+  
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, data);
-      localStorage.setItem('token', response.data.token);
-      navigate('/home');
-      toast.success(isLogin ? 'Logged in successfully!' : 'Registered successfully!');  // Success toast
+  
+      // Check if both token and userId are present in the response
+      const { token, userId } = response.data;
+      if (token && userId) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId); // Save userId to localStorage
+        navigate('/home');
+        toast.success(isLogin ? 'Logged in successfully!' : 'Registered successfully!');
+      } else {
+        throw new Error('Missing token or userId in the response');
+      }
     } catch (error) {
-      toast.error(error.response.data.message || 'Authentication failed. Please try again.');  // Error toast
+      console.error('Authentication error:', error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || 'Authentication failed. Please try again.');
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow">
