@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
+    "cloudinary-react": "^1.8.1",
     "daisyui": "^4.12.13",
     "froala-editor": "^4.3.0",
     "jwt-decode": "^4.0.0",
