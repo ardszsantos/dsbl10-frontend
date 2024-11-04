@@ -7,7 +7,6 @@ import { Rings } from 'react-loader-spinner';
 import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'froala-editor/js/plugins.pkgd.min.js';
-import 'froala-editor/js/plugins/image.min.js'; // Import the image plugin
 
 Modal.setAppElement('#root');
 
@@ -25,6 +24,24 @@ const CreatePost = ({ refreshPosts }) => {
     setTitle('');
     setContent('');
     setLoading(false);
+  };
+
+  // Custom image upload function for Froala that uses Cloudinary
+  const handleImageUpload = (files, editor) => {
+    const imageFile = files[0];
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('upload_preset', 'ml_default'); // Optional, depending on your Cloudinary settings
+
+    // Upload to Cloudinary
+    axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, formData)
+      .then(response => {
+        const imageUrl = response.data.secure_url;
+        editor.image.insert(imageUrl, null, null, editor.image.get());
+      })
+      .catch(() => {
+        toast.error("Image upload failed. Please try again.");
+      });
   };
 
   const handleCreatePost = async (e) => {
@@ -53,7 +70,7 @@ const CreatePost = ({ refreshPosts }) => {
       toast.success('Post created successfully!');
       refreshPosts();
     } catch (err) {
-      setError('Tente re-logar, auth ta cagada por enquanto!.');
+      setError('An error occurred while creating the post. Please try again later.');
       console.error(err);
       setLoading(false);
     }
@@ -111,6 +128,12 @@ const CreatePost = ({ refreshPosts }) => {
                 },
                 imageUpload: true,
                 toolbarButtonsXS: ['bold', 'italic', 'underline', 'insertImage'], // Mobile-friendly toolbar
+                events: {
+                  'image.beforeUpload': (files) => {
+                    handleImageUpload(files, this);
+                    return false; // Prevent Froala's default upload
+                  },
+                },
               }}
               className="w-full h-64 bg-gray-100 dark:bg-gray-700 p-2 dark:text-white"
             />
